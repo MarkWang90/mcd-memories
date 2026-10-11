@@ -1,0 +1,444 @@
+/* =====================================================================
+   重庆森林 / Chungking Express 视觉主题
+   ---------------------------------------------------------------------
+   参考的不是某一张海报，而是杜可风那台摄影机留下来的东西：
+   墨绿的暗部、只有边缘被路灯扫到的物体、抽帧留下的重影、
+   以及永远存在的一层胶片颗粒。
+
+   用法：本文件由 scripts/cards.py 读取并内联进每张卡片 HTML。
+   ===================================================================== */
+
+:root {
+  /* 色板：整套片子只有这七个颜色，不要引入新的 */
+  --ink:      #061612;   /* 深渊 */
+  --green:    #0A211C;   /* 墨绿 */
+  --jade:     #1B4A3E;   /* 幽青 */
+  --gold:     #E3AE4C;   /* 昏黄 · 主光源 */
+  --brass:    #B8873A;   /* 暗金 */
+  --red:      #C42C3A;   /* 霓虹红 · 只用在最狠的那一下 */
+  --cream:    #DED5BE;   /* 褪色米 · 字幕 */
+  --dim:      #6E7A72;   /* 灰 */
+
+  --font-sub: "Songti SC", "STSong", "Noto Serif CJK SC", serif;   /* 字幕：宋体 */
+  --font-num: "SF Mono", "Menlo", "DejaVu Sans Mono", monospace;   /* 时间戳：等宽 */
+  --font-cjk: "PingFang SC", "Heiti SC", sans-serif;               /* 正文 */
+
+  --pad: 96px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---------- 画布 ---------- */
+.stage {
+  position: relative;
+  width: 1080px;
+  height: 1440px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-cjk);
+}
+
+/* 暗调底色：一个从左上打过来的单点光，其余全部沉进墨绿里 */
+.bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(760px 620px at 28% 22%, rgba(227,174,76,.20) 0%, transparent 62%),
+    radial-gradient(900px 700px at 78% 88%, rgba(27,74,62,.55) 0%, transparent 70%),
+    linear-gradient(165deg, var(--jade) 0%, var(--green) 46%, var(--ink) 100%);
+}
+
+/* ---------- 照片层 ----------
+   一整张实拍质感的底。放大到 1.07 是为了把素材自带的边角标记推出画框外，
+   同时给构图留一点可以呼吸的余量。 */
+.photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 44%;
+  background-repeat: no-repeat;
+  transform: scale(1.07);
+  filter: saturate(1.02) contrast(1.10) brightness(.84) sepia(.10);
+}
+
+/* 遮罩：上下压到很暗，中间透出画面。
+   字幕的每一个字都要能在最亮的那块像素上读出来。 */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(3,10,8,.88) 0%,
+    rgba(3,10,8,.46) 16%,
+    rgba(3,10,8,.08) 34%,
+    rgba(3,10,8,.26) 50%,
+    rgba(3,10,8,.78) 72%,
+    rgba(2,8,6,.96) 100%);
+}
+
+/* 调色层：把照片的色温拉进这套片子的墨绿／昏黄里，不让它显得太"数码" */
+.tint {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(
+    205deg,
+    rgba(27,74,62,.62) 0%,
+    rgba(227,174,76,.14) 58%,
+    rgba(6,18,14,.70) 100%);
+}
+
+/* 霓虹反光：一道斜掠的红，只在部分页面开启 */
+.bg.red   { background-image:
+    radial-gradient(700px 520px at 20% 76%, rgba(196,44,58,.30) 0%, transparent 66%),
+    radial-gradient(820px 640px at 76% 24%, rgba(227,174,76,.16) 0%, transparent 64%),
+    linear-gradient(150deg, #16110E 0%, #0A211C 52%, var(--ink) 100%); }
+
+.bg.cold  { background-image:
+    radial-gradient(900px 780px at 50% 42%, rgba(27,74,62,.50) 0%, transparent 72%),
+    linear-gradient(180deg, #0C2620 0%, var(--ink) 74%); }
+
+/* 胶片颗粒：噪点 + 轻微图层混合，这一层决定了"值钱不值钱" */
+.grain {
+  position: absolute; inset: -12%;
+  pointer-events: none;
+  opacity: .30;
+  mix-blend-mode: overlay;
+  background-image: var(--noise);
+  background-size: 320px 320px;
+}
+
+/* 扫描线：老录像带的横向拉丝 */
+.scan {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: .16;
+  background: repeating-linear-gradient(
+    180deg, rgba(0,0,0,.55) 0px, rgba(0,0,0,.55) 2px, transparent 2px, transparent 5px);
+}
+
+/* 暗角：把视线压回画面中心 */
+.vignette {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 300px 90px rgba(0,0,0,.82);
+}
+
+/* ---------- 时间戳（左上角） ---------- */
+.timecode {
+  position: absolute;
+  top: var(--pad);
+  left: var(--pad);
+  font-family: var(--font-num);
+  font-size: 30px;
+  letter-spacing: .22em;
+  color: var(--gold);
+  opacity: .92;
+  text-shadow: 0 0 26px rgba(227,174,76,.45);
+}
+.timecode .dot {
+  display: inline-block;
+  width: 11px; height: 11px;
+  margin-right: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 20px 4px rgba(196,44,58,.75);
+  vertical-align: middle;
+  animation: blink 2.6s steps(1,end) infinite;
+}
+@keyframes blink { 0%,58% { opacity: 1 } 59%,100% { opacity: .18 } }
+
+/* 右上角页码 */
+.folio {
+  position: absolute;
+  top: var(--pad);
+  right: var(--pad);
+  font-family: var(--font-num);
+  font-size: 26px;
+  letter-spacing: .18em;
+  color: var(--dim);
+}
+
+/* ---------- 主画面区 ---------- */
+.frame {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: 200px 92px 178px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 字幕区 ---------- */
+.caption {
+  position: relative;
+  z-index: 3;
+}
+
+/* 主句：宋体，字距拉开，像字幕机上滚出来的那一行。
+   字号卡在 52px 是有原因的 —— 一行最多放得下十五个汉字，
+   超过就要断行，一断行就不像字幕，像说明书。 */
+.line {
+  font-family: var(--font-sub);
+  font-size: 52px;
+  line-height: 1.66;
+  letter-spacing: .06em;
+  color: var(--cream);
+  text-shadow: 0 3px 30px rgba(0,0,0,.94), 0 0 62px rgba(0,0,0,.5);
+}
+
+/* 抽帧重影：王家卫剪出来的那种"人还没走干净"的拖尾 */
+.ghost {
+  text-shadow:
+     9px 0 0 rgba(196,44,58,.42),
+    -9px 0 0 rgba(27,74,62,.70),
+     0 3px 30px rgba(0,0,0,.94);
+}
+
+/* 落款式的注脚：小一点、灰一点、斜着进来的第二句 */
+.footnote {
+  margin-top: 30px;
+  font-family: var(--font-sub);
+  font-size: 34px;
+  line-height: 1.58;
+  letter-spacing: .05em;
+  color: var(--dim);
+  text-shadow: 0 2px 22px rgba(0,0,0,.92);
+}
+
+/* ---------- 大数字：宋体 + 散光 ---------- */
+.bignum {
+  font-family: var(--font-sub);
+  font-size: 300px;
+  line-height: .96;
+  color: var(--gold);
+  text-shadow: 0 0 90px rgba(227,174,76,.42), 0 6px 40px rgba(0,0,0,.85);
+  letter-spacing: -.02em;
+}
+.bignum .unit {
+  font-size: 84px;
+  color: var(--brass);
+  margin-left: 14px;
+}
+
+/* 封面标题 */
+.title {
+  font-family: var(--font-sub);
+  font-size: 108px;
+  line-height: 1.34;
+  letter-spacing: .10em;
+  color: var(--cream);
+  text-shadow: 0 4px 46px rgba(0,0,0,.95);
+}
+.title em {
+  font-style: normal;
+  color: var(--gold);
+  text-shadow: 0 0 70px rgba(227,174,76,.55), 0 4px 46px rgba(0,0,0,.95);
+}
+
+/* 中英对照的小标签 */
+.kicker {
+  font-family: var(--font-num);
+  font-size: 28px;
+  letter-spacing: .34em;
+  color: var(--brass);
+  text-transform: uppercase;
+}
+
+/* ---------- 数据表：月份条 / 格子 ---------- */
+.bars { display: flex; align-items: flex-end; gap: 34px; }
+
+.bar-item { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+.bar {
+  width: 92px;
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--brass) 58%, #6E5320 100%);
+  box-shadow: 0 0 40px rgba(227,174,76,.34);
+}
+.bar.mute {
+  background: linear-gradient(180deg, #24463C 0%, var(--jade) 70%, #102A23 100%);
+  box-shadow: none;
+}
+
+.bar-label {
+  font-family: var(--font-num);
+  font-size: 26px;
+  color: var(--dim);
+  letter-spacing: .08em;
+}
+.bar-value {
+  font-family: var(--font-sub);
+  font-size: 40px;
+  color: var(--cream);
+}
+
+/* 日历格 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 13px;
+}
+.cell {
+  aspect-ratio: 1;
+  border-radius: 7px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(222,213,190,.16);
+}
+.cell.on {
+  background: linear-gradient(160deg, var(--gold) 0%, var(--brass) 100%);
+  border-color: transparent;
+  box-shadow: 0 0 30px rgba(227,174,76,.46);
+}
+.cell.off {
+  background: rgba(0,0,0,.62);
+  border-color: rgba(222,213,190,.10);
+}
+
+/* 左右对称的两栏对比 */
+.duo { display: flex; align-items: stretch; gap: 44px; }
+
+.duo-col {
+  flex: 1;
+  padding: 42px 34px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.56);
+  border: 1px solid rgba(222,213,190,.16);
+  backdrop-filter: blur(3px);
+}
+.duo-col.hit {
+  background: rgba(227,174,76,.16);
+  border-color: rgba(227,174,76,.42);
+  box-shadow: 0 0 70px rgba(227,174,76,.20) inset;
+}
+.duo-num {
+  font-family: var(--font-sub);
+  font-size: 96px;
+  color: var(--gold);
+  line-height: 1.1;
+}
+.duo-col:not(.hit) .duo-num { color: var(--dim); }
+.duo-label {
+  font-family: var(--font-num);
+  font-size: 26px;
+  color: var(--dim);
+  letter-spacing: .12em;
+  margin-top: 16px;
+}
+
+/* =====================================================================
+   ART 模式 · 不用任何图片，只靠光
+   ---------------------------------------------------------------------
+   六套布光轮流换。光源位置变了，但色板一个都没变 ——
+   所以每个人的报告都不一样，但一眼看得出来是同一部片子。
+   ===================================================================== */
+.bg.a1 {
+  background-image:
+    radial-gradient(720px 620px at 22% 18%, rgba(227,174,76,.26) 0%, transparent 60%),
+    radial-gradient(940px 740px at 84% 92%, rgba(27,74,62,.66) 0%, transparent 70%),
+    linear-gradient(158deg, var(--jade) 0%, var(--green) 48%, var(--ink) 100%);
+}
+.bg.a2 {
+  background-image:
+    radial-gradient(680px 700px at 78% 26%, rgba(227,174,76,.22) 0%, transparent 62%),
+    radial-gradient(1000px 800px at 14% 86%, rgba(27,74,62,.60) 0%, transparent 72%),
+    linear-gradient(202deg, var(--jade) 0%, var(--green) 44%, var(--ink) 100%);
+}
+.bg.a3 {
+  background-image:
+    radial-gradient(880px 560px at 50% 12%, rgba(227,174,76,.18) 0%, transparent 64%),
+    radial-gradient(760px 700px at 30% 96%, rgba(27,74,62,.58) 0%, transparent 70%),
+    linear-gradient(180deg, #0C2620 0%, var(--green) 52%, var(--ink) 100%);
+}
+.bg.a4 {
+  background-image:
+    radial-gradient(760px 680px at 16% 78%, rgba(196,44,58,.22) 0%, transparent 62%),
+    radial-gradient(820px 620px at 82% 20%, rgba(227,174,76,.17) 0%, transparent 64%),
+    linear-gradient(146deg, #141210 0%, #0A211C 54%, var(--ink) 100%);
+}
+.bg.a5 {
+  background-image:
+    radial-gradient(620px 620px at 68% 62%, rgba(227,174,76,.20) 0%, transparent 58%),
+    radial-gradient(900px 900px at 22% 14%, rgba(27,74,62,.70) 0%, transparent 74%),
+    linear-gradient(172deg, #081E19 0%, var(--jade) 46%, var(--ink) 100%);
+}
+.bg.a6 {
+  background-image:
+    radial-gradient(980px 720px at 50% 50%, rgba(27,74,62,.52) 0%, transparent 72%),
+    radial-gradient(560px 480px at 24% 30%, rgba(227,174,76,.15) 0%, transparent 60%),
+    linear-gradient(190deg, var(--green) 0%, #071A15 60%, var(--ink) 100%);
+}
+
+/* 光柱：从画面外斜切进来的一道光。没有照片的时候，这一层就是画面的主体。 */
+.shaft {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: .13;
+  background: linear-gradient(102deg,
+    transparent 34%, rgba(227,174,76,.62) 49%, transparent 63%);
+}
+
+/* 镜头眩光：一小片被过曝拉长的红，只在部分页面出现 */
+.smear {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: .10;
+  background: radial-gradient(280px 860px at 12% 70%, rgba(196,44,58,.62), transparent 70%);
+}
+
+/* =====================================================================
+   胶片长卷（一页纸模式）
+   ===================================================================== */
+html, body { background: #04100D; }
+
+.reel {
+  width: 1080px;
+  margin: 0 auto;
+  background: #04100D;
+  position: relative;
+}
+
+.reel-inner { position: relative; }
+
+.scene {
+  position: relative;
+  width: 1080px;
+  height: 1440px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-cjk);
+}
+
+/* 卷帘两侧的电影齿孔 —— 提醒你这是一卷胶片，不是一份报告 */
+.perf {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 42px;
+  z-index: 4;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(222,213,190,.15) 0px, rgba(222,213,190,.15) 34px,
+    transparent 34px, transparent 78px);
+}
+.perf.l { left: 0; border-right: 1px solid rgba(222,213,190,.10); }
+.perf.r { right: 0; border-left: 1px solid rgba(222,213,190,.10); }
+.reel .scene > .frame { padding-left: 116px; padding-right: 116px; }
+
+/* 场景之间的接缝：上一幕的光还没散干净 */
+.reel .scene + .scene::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(227,174,76,.30), transparent);
+  z-index: 5;
+}

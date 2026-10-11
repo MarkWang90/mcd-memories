@@ -1,0 +1,27 @@
+# ===== 安全第一层:凭证 =====
+.env
+.env.*
+*.token
+*mcd-mcp-server-token*
+secrets/
+
+# ===== 第二层:本地采集数据(含个人消费/会员信息) =====
+data/
+*.db
+*.sqlite
+*.sqlite3
+output/
+!output/.gitkeep
+
+# 例外:样例成品图是要进仓库的(README 要用),它不含真实数据
+!assets/preview/
+
+# ===== 第三层:常规 =====
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+*.log

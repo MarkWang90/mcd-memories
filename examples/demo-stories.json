@@ -1,0 +1,132 @@
+{
+  "_note": "样例数据。这份 JSON 是虚构的，用来让没有 Token 的人也能先看到成品长什么样。跑自己的请用 scripts/fetch_orders.py 生成真实的 data/stories.json。",
+  "meta": {
+    "generated_at": "2026-10-11T00:00:00",
+    "total_orders": 10,
+    "span_days": 261,
+    "first_date": "2026-01-18",
+    "last_date": "2026-10-06",
+    "store_count": 3
+  },
+  "first_order": {
+    "date": "2026-01-18",
+    "time": "20:14",
+    "weekday": "星期日",
+    "store": "五角场万达餐厅",
+    "combo": "板烧鸡腿堡两件套",
+    "singles": ["板烧鸡腿堡", "中份薯条", "无糖可口可乐"]
+  },
+  "last_order": {
+    "date": "2026-10-06",
+    "time": "21:48",
+    "weekday": "星期二",
+    "store": "虹桥天地餐厅",
+    "combo": "麦香鱼两件套"
+  },
+  "stores": [
+    {
+      "name": "五角场万达餐厅",
+      "count": 4,
+      "first_date": "2026-01-18",
+      "sample_combo": "板烧鸡腿堡两件套"
+    },
+    {
+      "name": "虹桥天地餐厅",
+      "count": 4,
+      "first_date": "2026-09-11",
+      "sample_combo": "麦香鱼两件套"
+    },
+    {
+      "name": "江宁路餐厅",
+      "count": 2,
+      "first_date": "2026-06-14",
+      "sample_combo": "原味板烧鸡腿堡早餐两件套"
+    }
+  ],
+  "top_combos": [
+    {"name": "麦香鱼两件套", "count": 3},
+    {"name": "板烧鸡腿堡两件套", "count": 3},
+    {"name": "巨无霸三件套", "count": 2}
+  ],
+  "top_singles": [
+    {"name": "无糖可口可乐", "count": 7},
+    {"name": "中份薯条", "count": 6},
+    {"name": "麦香鱼", "count": 3},
+    {"name": "板烧鸡腿堡", "count": 3},
+    {"name": "香芋派", "count": 2}
+  ],
+  "drinks": {
+    "sugarfree_orders": 7,
+    "coffee_orders": 3,
+    "breakdown": [
+      {"name": "无糖可口可乐", "count": 7},
+      {"name": "可口可乐", "count": 1},
+      {"name": "阳光柠檬红茶", "count": 1},
+      {"name": "拿铁", "count": 1}
+    ]
+  },
+  "slots": [
+    {"slot": "午餐", "count": 4},
+    {"slot": "晚餐", "count": 3},
+    {"slot": "早餐", "count": 2},
+    {"slot": "夜宵", "count": 1}
+  ],
+  "earliest": {
+    "time": "07:52",
+    "date": "2026-06-14",
+    "store": "江宁路餐厅",
+    "combo": "原味板烧鸡腿堡早餐两件套"
+  },
+  "latest": {
+    "time": "21:48",
+    "date": "2026-10-06",
+    "store": "虹桥天地餐厅",
+    "combo": "麦香鱼两件套"
+  },
+  "weekdays": [
+    {"day": "星期日", "count": 4},
+    {"day": "星期六", "count": 2},
+    {"day": "星期一", "count": 1},
+    {"day": "星期四", "count": 1},
+    {"day": "星期五", "count": 1}
+  ],
+  "biggest_gap": {
+    "days": 70,
+    "from": "2026-04-05",
+    "to": "2026-06-14"
+  },
+  "months": [
+    {"month": "2026-01", "count": 1},
+    {"month": "2026-02", "count": 1},
+    {"month": "2026-04", "count": 1},
+    {"month": "2026-06", "count": 1},
+    {"month": "2026-07", "count": 1},
+    {"month": "2026-08", "count": 1},
+    {"month": "2026-09", "count": 3},
+    {"month": "2026-10", "count": 1}
+  ],
+  "quietest_months": [
+    {"month": "2026-03", "count": 0},
+    {"month": "2026-05", "count": 0}
+  ],
+  "rhythm": {
+    "pivot_date": "2026-09-11",
+    "early": {"days": 236, "orders": 6},
+    "late": {"days": 26, "orders": 4},
+    "ratio": 6.26
+  },
+  "turning_point": {
+    "date": "2026-09-11",
+    "weekday": "星期五",
+    "new_store": "虹桥天地餐厅",
+    "orders_before": 6,
+    "orders_after": 4,
+    "new_favorite": {"name": "麦香鱼两件套", "count": 3}
+  },
+  "money": {
+    "total": 0,
+    "avg": 0,
+    "max": 0,
+    "min": 0
+  }
+}
