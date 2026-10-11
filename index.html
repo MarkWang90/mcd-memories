@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麦麦记忆罐头 · 生成你自己的九幕长卷</title>
+<meta name="description" content="把你吃过的麦当劳，装进一个不会过期的罐头。手填几个数字，生成《重庆森林》质感的九幕长卷。">
+<style>
+:root{
+  --ink:#061612; --green:#0A211C; --jade:#1B4A3E;
+  --gold:#E3AE4C; --brass:#B8873A; --red:#C42C3A;
+  --cream:#DED5BE; --dim:#6E7A72;
+  --font-cjk:"PingFang SC","Heiti SC","Microsoft YaHei",sans-serif;
+  --font-sub:"Songti SC","STSong","Noto Serif CJK SC",serif;
+  --font-num:"SF Mono","Menlo","DejaVu Sans Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--ink);color:var(--cream);font-family:var(--font-cjk);-webkit-font-smoothing:antialiased}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(760px 620px at 12% 8%, rgba(227,174,76,.14) 0%, transparent 60%),
+    radial-gradient(900px 700px at 88% 92%, rgba(27,74,62,.45) 0%, transparent 70%),
+    linear-gradient(165deg,#0C2620 0%, var(--green) 46%, var(--ink) 100%);
+  background-attachment:fixed;
+}
+
+/* ---------- 页头 ---------- */
+header{max-width:1180px;margin:0 auto;padding:56px 28px 8px}
+.brand{font-family:var(--font-sub);font-size:38px;letter-spacing:.10em;color:var(--cream)}
+.brand em{font-style:normal;color:var(--gold)}
+.lede{margin-top:14px;font-size:15px;line-height:1.9;color:var(--dim);letter-spacing:.04em}
+.lede b{color:var(--cream);font-weight:500}
+.privacy{
+  display:inline-flex;align-items:center;gap:9px;margin-top:18px;
+  padding:7px 15px;border:1px solid rgba(227,174,76,.30);border-radius:999px;
+  font-size:12.5px;letter-spacing:.08em;color:var(--gold);opacity:.92;
+}
+.privacy i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 12px 2px rgba(196,44,58,.7);font-style:normal}
+
+/* ---------- 布局 ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:28px 28px 90px;display:grid;grid-template-columns:400px 1fr;gap:34px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}}
+
+/* ---------- 表单 ---------- */
+.panel{
+  background:rgba(6,22,18,.72);border:1px solid rgba(222,213,190,.10);border-radius:14px;
+  padding:26px 24px 30px;backdrop-filter:blur(6px);
+}
+.panel h2{
+  font-family:var(--font-sub);font-size:17px;letter-spacing:.16em;color:var(--gold);
+  padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid rgba(222,213,190,.10);
+}
+.hint{font-size:12.5px;color:var(--dim);line-height:1.85;margin:12px 0 18px}
+.f{margin-bottom:15px}
+.f label{display:block;font-size:12.5px;letter-spacing:.10em;color:var(--dim);margin-bottom:6px}
+.f label span{color:var(--brass)}
+.f input,.f select{
+  width:100%;padding:10px 12px;font-size:14px;font-family:var(--font-cjk);
+  color:var(--cream);background:rgba(10,33,28,.85);
+  border:1px solid rgba(222,213,190,.14);border-radius:8px;outline:none;
+  transition:border-color .18s;
+}
+.f input:focus,.f select:focus{border-color:rgba(227,174,76,.55)}
+.f input::placeholder{color:rgba(110,122,114,.75)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec{margin-top:26px}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  display:block;width:100%;padding:13px;margin-top:10px;
+  font-family:var(--font-cjk);font-size:14.5px;letter-spacing:.10em;
+  border:none;border-radius:9px;cursor:pointer;transition:.18s;
+}
+.btn-gold{background:linear-gradient(180deg,var(--gold),var(--brass));color:#1a1206;font-weight:600}
+.btn-gold:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--dim);border:1px solid rgba(222,213,190,.16)}
+.btn-ghost:hover{color:var(--cream);border-color:rgba(222,213,190,.34)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ---------- 预览 ---------- */
+.stage{
+  background:rgba(6,22,18,.55);border:1px solid rgba(222,213,190,.10);border-radius:14px;
+  padding:20px;min-height:420px;
+}
+.stage-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.stage-head h2{font-family:var(--font-sub);font-size:17px;letter-spacing:.16em;color:var(--gold)}
+.stage-head .meta{font-family:var(--font-num);font-size:12px;color:var(--dim);letter-spacing:.08em}
+.scroll{max-height:74vh;overflow:auto;border-radius:8px;padding:6px;background:rgba(3,10,8,.5)}
+.scroll::-webkit-scrollbar{width:8px}
+.scroll::-webkit-scrollbar-thumb{background:rgba(222,213,190,.16);border-radius:4px}
+#preview{display:block;width:100%;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.empty{padding:90px 20px;text-align:center;color:var(--dim);font-size:13.5px;line-height:2.1;letter-spacing:.06em}
+
+/* ---------- 页脚 ---------- */
+footer{max-width:1180px;margin:0 auto;padding:0 28px 70px;font-size:13px;line-height:2.1;color:var(--dim)}
+footer a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(227,174,76,.3)}
+footer a:hover{border-bottom-color:var(--gold)}
+.tips{margin-top:16px;font-family:var(--font-sub);font-size:13.5px;color:var(--brass);letter-spacing:.05em}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">麦麦记忆罐头 · <em>把你吃过的饭，装进一个罐头</em></div>
+  <p class="lede">
+    如果记忆也是一个罐头，我希望它不会过期。<b>可惜每一笔订单上，都印着精确到秒的日期。</b><br>
+    不用登录、不用授权、不用填表 —— <b>点一下，长出一部电影。</b>
+  </p>
+  <div class="privacy"><i></i>所有数据只留在你的浏览器里，不上传、不落库、无后端</div>
+</header>
+
+<div class="wrap">
+  <!-- ---------- 摇号 / 表单 ---------- -->
+  <div class="panel">
+    <button class="btn btn-gold" id="roll" style="margin-top:0;font-size:16px;padding:15px">摇 一 个 罐 头</button>
+    <button class="btn btn-ghost" id="toggleForm">用我的真实数字 ▾</button>
+    <p class="hint" style="margin-top:16px">
+      摇出来的是<b style="color:var(--cream)">随机生成的示例数字</b>，不是任何人的真实订单。<br>
+      想看真实版（精确到秒的时间戳、门店、组合、分水岭），去仓库用麦当劳官方 MCP 跑一遍。
+    </p>
+
+  <div id="formPanel" style="display:none">
+    <h2 style="margin-top:8px">填几个数字</h2>
+    <p class="hint">全部可留空。留空的幕不会出现在长卷里——这是这个项目的原则：数据算不出来的地方，宁可缺一页，也不编一句。</p>
+
+    <div class="sec">
+      <h2>时间</h2>
+      <div class="row">
+        <div class="f"><label>第一次吃（年-月）</label><input id="first" placeholder="2019-03"></div>
+        <div class="f"><label>最近一次（年-月）</label><input id="last" placeholder="2026-10"></div>
+      </div>
+      <div class="f"><label>一共多少顿</label><input id="total" type="number" min="1" placeholder="128"></div>
+      <div class="row">
+        <div class="f"><label>最早的一次（时:分）</label><input id="earliest" placeholder="07:53"></div>
+        <div class="f"><label>最晚的一次（时:分）</label><input id="latest" placeholder="21:13"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>口味</h2>
+      <div class="f"><label>最常点的单品</label><input id="fav" placeholder="麦辣鸡腿堡"></div>
+      <div class="f"><label>点过多少次</label><input id="favCount" type="number" min="1" placeholder="37"></div>
+      <div class="f"><label>去得最多的门店</label><input id="store" placeholder="大学城店"></div>
+      <div class="f"><label>去过多少次</label><input id="storeCount" type="number" min="1" placeholder="52"></div>
+    </div>
+
+    <div class="sec">
+      <h2>断档</h2>
+      <div class="f"><label>最长多久没吃（天）</label><input id="gap" type="number" min="1" placeholder="41"></div>
+      <div class="f"><label>那段时间大概是什么时候</label><input id="gapWhen" placeholder="2023 年夏天"></div>
+    </div>
+
+    <div class="sec">
+      <h2>钱</h2>
+      <div class="f"><label>一共花了多少（元，可不填）</label><input id="money" type="number" min="0" step="0.01" placeholder="3860"></div>
+    </div>
+
+    <button class="btn btn-gold" id="go">生成我的长卷</button>
+    <button class="btn btn-ghost" id="clear">清空重填</button>
+  </div>
+  </div>
+
+  <!-- ---------- 预览 ---------- -->
+  <div class="stage">
+    <div class="stage-head">
+      <h2>长卷预览</h2>
+      <div class="meta" id="meta">尚未生成</div>
+    </div>
+    <div class="scroll" id="scroll">
+      <div class="empty" id="empty">
+        点左边那个金色按钮，这边就会长出一部电影。<br>
+        摇出来的数字是随机的，长出来的长卷是真的 —— 可以直接下载。
+      </div>
+      <canvas id="preview" style="display:none"></canvas>
+    </div>
+    <button class="btn btn-gold" id="dlAll" disabled>下载长卷 PNG</button>
+    <button class="btn btn-ghost" id="dlOne" disabled>只下载封面那张</button>
+  </div>
+</div>
+
+<footer>
+  <div>想用<b>真实订单</b>自动生成（精确到秒的时间戳、门店、组合、分水岭）→
+    <a href="https://github.com/MarkWang90/mcd-memory-can" target="_blank" rel="noopener">github.com/MarkWang90/mcd-memory-can</a>
+    　·　用麦当劳中国官方 MCP 的只读接口，全程只读不上传。
+  </div>
+  <div class="tips">「不知道从什么时候开始，在什么东西上面都有个日期。」</div>
+</footer>
+
+<script>
+/* =====================================================================
+   麦麦记忆罐头 · 网页版生成器
+   ---------------------------------------------------------------------
+   零依赖：不引任何第三方库，画面全部由 Canvas 现画。
+   零上传：所有输入只活在内存里，刷新即消失。
+   不编造：哪一幕的数据凑不齐，那一幕就不画 —— 这是从主项目继承的规矩。
+   ===================================================================== */
+
+const W = 1080, H = 1440, PAD = 96;
+const INK='#061612', GREEN='#0A211C', JADE='#1B4A3E';
+const GOLD='#E3AE4C', BRASS='#B8873A', RED='#C42C3A', CREAM='#DED5BE', DIM='#6E7A72';
+const SUB = '"Songti SC","STSong","Noto Serif CJK SC",serif';
+const NUM = '"SF Mono","Menlo","DejaVu Sans Mono",monospace';
+const CJK = '"PingFang SC","Heiti SC","Microsoft YaHei",sans-serif';
+
+const $ = id => document.getElementById(id);
+const val = id => ($(id).value || '').trim();
+const num = id => { const v = parseFloat($(id).value); return isFinite(v) && v > 0 ? v : null; };
+
+/* ---------- 胶片颗粒：现造一张噪点，重复平铺 ---------- */
+let grainPattern = null;
+function grain(ctx){
+  if (grainPattern) return grainPattern;
+  const g = document.createElement('canvas');
+  g.width = g.height = 240;
+  const gc = g.getContext('2d');
+  const img = gc.createImageData(240,240);
+  for (let i=0;i<img.data.length;i+=4){
+    const v = 90 + Math.random()*130;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v;
+    img.data[i+3]=255;
+  }
+  gc.putImageData(img,0,0);
+  grainPattern = ctx.createPattern(g,'repeat');
+  return grainPattern;
+}
+
+/* ---------- 一幕的底：布光 ---------- */
+function backdrop(ctx, y, tone){
+  const g = ctx.createLinearGradient(0, y, W*0.6, y+H);
+  if (tone === 'red'){
+    g.addColorStop(0,'#16110E'); g.addColorStop(.52,'#0A211C'); g.addColorStop(1,INK);
+  } else if (tone === 'cold'){
+    g.addColorStop(0,'#0C2620'); g.addColorStop(.74,INK); g.addColorStop(1,INK);
+  } else {
+    g.addColorStop(0,JADE); g.addColorStop(.46,GREEN); g.addColorStop(1,INK);
+  }
+  ctx.fillStyle = g; ctx.fillRect(0,y,W,H);
+
+  // 单点光：从左上打过来
+  const cx = tone==='red' ? W*0.20 : W*0.28, cy = y + (tone==='red'? H*0.76 : H*0.22);
+  const r  = ctx.createRadialGradient(cx,cy,0,cx,cy,tone==='red'?700:760);
+  r.addColorStop(0, tone==='red' ? 'rgba(196,44,58,.28)' : 'rgba(227,174,76,.20)');
+  r.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = r; ctx.fillRect(0,y,W,H);
+
+  const r2 = ctx.createRadialGradient(W*0.78, y+H*0.88, 0, W*0.78, y+H*0.88, 900);
+  r2.addColorStop(0, tone==='cold' ? 'rgba(27,74,62,.50)' : 'rgba(27,74,62,.55)');
+  r2.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = r2; ctx.fillRect(0,y,W,H);
+}
+
+/* ---------- 颗粒 / 扫描线 / 暗角 ---------- */
+function film(ctx, y){
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0,y,W,H); ctx.clip();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = .28;
+  ctx.fillStyle = grain(ctx);
+  ctx.fillRect(0,y,W,H);
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0,y,W,H); ctx.clip();
+  ctx.globalAlpha = .14; ctx.fillStyle = '#000';
+  for (let yy=y; yy<y+H; yy+=5) ctx.fillRect(0,yy,W,2);
+  ctx.restore();
+
+  const v = ctx.createRadialGradient(W/2, y+H/2, H*0.28, W/2, y+H/2, H*0.78);
+  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,.80)');
+  ctx.fillStyle = v; ctx.fillRect(0,y,W,H);
+}
+
+/* ---------- 页眉：时间戳 + 页码 ---------- */
+function chrome(ctx, y, scene, idx, total){
+  ctx.save();
+  ctx.textAlign = 'left';                 // 不依赖上一幕留下的对齐状态
+  ctx.textBaseline = 'top';
+  const tc = scene.time || '';
+  if (tc){
+    ctx.font = '30px ' + NUM;
+    ctx.fillStyle = GOLD; ctx.globalAlpha = .92;
+    ctx.shadowColor = 'rgba(227,174,76,.45)'; ctx.shadowBlur = 26;
+    ctx.fillText(tc, PAD, y+PAD+8);
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+
+    // 红点：录像时亮着的那颗灯
+    ctx.beginPath(); ctx.arc(PAD-26, y+PAD+22, 6, 0, Math.PI*2);
+    ctx.fillStyle = RED; ctx.shadowColor='rgba(196,44,58,.75)'; ctx.shadowBlur=18; ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  ctx.font = '26px ' + NUM;
+  ctx.fillStyle = DIM; ctx.textAlign = 'right';
+  ctx.fillText(String(idx+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0'), W-PAD, y+PAD+12);
+  ctx.restore();
+}
+
+/* ---------- 数字幕：中央一个大数 ---------- */
+/* 字号不是写死的：中文数字一长就容易顶出画框，所以先量后画。 */
+function fitFont(ctx, text, base, maxW){
+  let fs = base;
+  ctx.font = fs + 'px ' + SUB;
+  const w = ctx.measureText(text).width;
+  if (w > maxW){ fs = Math.max(48, Math.floor(fs * maxW / w)); ctx.font = fs + 'px ' + SUB; }
+  return fs;
+}
+
+function figure(ctx, y, scene){
+  const cx = W/2, cy = y + H*0.44;
+  const maxW = W - PAD*2;
+  ctx.save();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+  if (scene.label){
+    fitFont(ctx, scene.label, 26, maxW*0.7);
+    ctx.fillStyle = BRASS; ctx.globalAlpha = .95;
+    ctx.letterSpacing && (ctx.letterSpacing = '0.34em');
+    ctx.fillText(scene.label, cx, cy - 250);
+    ctx.letterSpacing && (ctx.letterSpacing = '0em');
+  }
+
+  // 数字：抽帧重影先垫一层
+  const big = String(scene.value);
+  const fs = fitFont(ctx, big, big.length >= 5 ? 210 : (big.length >= 3 ? 268 : 300), maxW);
+  ctx.fillStyle = 'rgba(196,44,58,.34)';
+  ctx.fillText(big, cx + 7, cy + 6);
+  ctx.fillStyle = 'rgba(227,174,76,.22)';
+  ctx.fillText(big, cx - 5, cy - 4);
+
+  const grad = ctx.createLinearGradient(0, cy-fs/2, 0, cy+fs/2);
+  grad.addColorStop(0,'#F6D98A'); grad.addColorStop(.55, GOLD); grad.addColorStop(1, BRASS);
+  ctx.fillStyle = grad;
+  ctx.shadowColor = 'rgba(227,174,76,.34)'; ctx.shadowBlur = 62;
+  ctx.fillText(big, cx, cy);
+  ctx.shadowBlur = 0;
+
+  if (scene.unit){
+    ctx.font = '58px ' + SUB;
+    ctx.fillStyle = CREAM; ctx.globalAlpha = .90;
+    ctx.fillText(scene.unit, cx, cy + fs*0.52);
+  }
+  ctx.restore();
+}
+
+/* ---------- 字幕 ----------
+   一行最多十七个汉字，这是从主项目继承的规矩：一断行就不像字幕，像说明书。
+   所以超出就折行，折完还是太高就把字号压下来，绝不让它顶出画框。 */
+function caption(ctx, y, scene){
+  if (!scene.lines || !scene.lines.length) return;
+  const maxW = W - PAD*2;
+  ctx.save();
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+
+  const wrap = size => {
+    ctx.font = size + 'px ' + SUB;
+    const out = [];
+    scene.lines.forEach(t => {
+      let cur = '';
+      for (const ch of String(t)){
+        if (cur && ctx.measureText(cur + ch).width > maxW){ out.push(cur); cur = ch; }
+        else cur += ch;
+      }
+      if (cur) out.push(cur);
+    });
+    return out;
+  };
+
+  let fs = 52, lines = wrap(fs), lh = fs * 1.66;
+  while (lines.length > 5 && fs > 34){ fs -= 4; lines = wrap(fs); lh = fs * 1.66; }
+
+  let startY = y + H - PAD - 150 - (lines.length - 1) * lh;
+  const floor = y + H*0.60;                 // 字幕不许爬到中央数字身上
+  if (startY < floor) startY = floor;
+
+  ctx.font = fs + 'px ' + SUB;
+  ctx.shadowColor = 'rgba(0,0,0,.94)'; ctx.shadowBlur = 30;
+  lines.forEach((ln, i) => {
+    // 重影：字幕机没走干净的那一帧
+    ctx.globalAlpha = .22; ctx.fillStyle = 'rgba(222,213,190,1)';
+    ctx.fillText(ln, PAD + 4, startY + i*lh + 3);
+    ctx.globalAlpha = 1; ctx.fillStyle = CREAM;
+    ctx.fillText(ln, PAD, startY + i*lh);
+  });
+  ctx.restore();
+}
+
+/* ---------- 画完整一幕 ---------- */
+function drawScene(ctx, y, scene, idx, total){
+  backdrop(ctx, y, scene.tone);
+  film(ctx, y);
+  chrome(ctx, y, scene, idx, total);
+  if (scene.value !== undefined && scene.value !== null) figure(ctx, y, scene);
+  caption(ctx, y, scene);
+  if (scene.signature) signature(ctx, y, scene.signature);
+
+  // 分隔：幕与幕之间压一道暗边
+  ctx.fillStyle = 'rgba(0,0,0,.55)';
+  ctx.fillRect(0, y+H-3, W, 3);
+}
+
+function signature(ctx, y, text){
+  ctx.save();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.font = '24px ' + NUM;
+  ctx.fillStyle = 'rgba(110,122,114,.95)';
+  ctx.fillText(text, W/2, y + H - PAD + 6);
+  ctx.restore();
+}
+
+/* =====================================================================
+   装配：把表单里能凑齐的幕挑出来
+   ===================================================================== */
+function buildScenes(d){
+  const s = [];
+  const span = d.first && d.last ? monthsBetween(d.first, d.last) : null;
+  const push = o => s.push(o);
+
+  /* 00 封面 —— 永远在 */
+  const sub = span ? `跨度 ${cnShort(span)} 天` : '';
+  push({
+    label: '', value: null, tone: 'jade', time: '', signature: '',
+    lines: ['如果记忆也是一个罐头，', '我希望它不会过期。']
+  });
+  // 封面中央改用大标题（没有数字，画标题）
+  s[0].title = '麦麦记忆罐头';
+  s[0].sub = sub || '把你吃过的饭，装进一个罐头';
+
+  /* 01 第一次 */
+  if (d.first){
+    push({
+      label: '第 一 次', tone:'jade', time: d.first,
+      lines: [`你第一次走进那家店，是 ${ym(d.first)}。`,
+              '那时候你还不知道，这会变成一条有日期的线。']
+    });
+    // 中央放年月
+    s[s.length-1].value = d.first.slice(0,4);
+    s[s.length-1].unit = '年 ' + d.first.slice(5,7) + ' 月';
+  }
+
+  /* 02 跨度 */
+  if (span && d.total){
+    push({
+      label: '跨 度', value: cn(span), unit: '天', tone:'jade', time: `${d.first} → ${d.last}`,
+      lines: [`从 ${ym(d.first)} 到 ${ym(d.last)}，一共 ${cnShort(span)} 天。`,
+              `这中间你吃了 ${cnShort(d.total)} 顿。`,
+              '平均下来，每 ' + cnShort(Math.max(1, Math.round(span/(d.total||1)))) + ' 天一次。']
+    });
+  }
+
+  /* 03 坐标：最常去的门店 */
+  if (d.store){
+    push({
+      label: '去 得 最 多 的 地 方', value: d.storeCount ? cn(d.storeCount) : null,
+      unit: d.storeCount ? '次' : null, tone:'jade', time:'',
+      lines: [`${d.store}。`, d.storeCount ? `你去了 ${cnShort(d.storeCount)} 次。` : '你总是回到那里。',
+              '有些门店不是顺路，是习惯。']
+    });
+  }
+
+  /* 04 执念：最常点的单品 */
+  if (d.fav){
+    push({
+      label: '重 复 最 多 的 那 一 样', value: d.favCount ? cn(d.favCount) : null,
+      unit: d.favCount ? '次' : null, tone:'gold', time:'',
+      lines: [`${d.fav}。`, d.favCount ? `你点了 ${cnShort(d.favCount)} 次。` : '你从来没换过。',
+              '如果记忆也是一个罐头，这一罐就是这个味道。']
+    });
+  }
+
+  /* 05 时辰 */
+  if (d.earliest || d.latest){
+    const ls = [];
+    if (d.earliest) ls.push(`最早的一次，${d.earliest}。`);
+    if (d.latest)   ls.push(`最晚的一次，${d.latest}。`);
+    ls.push('一天里总有两个时刻，你比别的时候更需要它。');
+    push({ label:'时 辰', value:null, tone:'cold', time:'', lines: ls });
+    // 中央：两个时间并排
+    const sc = s[s.length-1];
+    sc.figureLines = [d.earliest || '——', d.latest || '——'].filter(Boolean);
+    sc.figureLabel = d.earliest && d.latest ? ['最 早','最 晚'] : null;
+  }
+
+  /* 06 空窗 */
+  if (d.gap){
+    push({
+      label: '最 长 的 空 窗', value: cn(d.gap), unit:'天', tone:'red', time:'',
+      lines: [`有 ${cnShort(d.gap)} 天，你一次都没有去。`,
+              d.gapWhen ? `大约是 ${d.gapWhen}。` : '那段时间发生了什么，订单上看不出来。',
+              '我开始怀疑，在这个世界上，还有什么东西是不会过期的。']
+    });
+  }
+
+  /* 07 钱（可选） */
+  if (d.money){
+    push({
+      label: '一 共', value: d.money < 10000 ? cn(d.money) : String(Math.round(d.money)),
+      unit:'元', tone:'jade', time:'',
+      lines: [`${Math.round(d.money)} 元。`,
+              d.total ? `除以 ${cnShort(d.total)} 顿，平均每顿 ${(d.money/d.total).toFixed(1)} 元。` : '钱能算清，别的算不清。']
+    });
+  }
+
+  /* 尾声 —— 永远在 */
+  push({
+    label:'', value:null, tone:'cold', time:'',
+    signature:(usingDemo ? '示例数据 · ' : '') + 'github.com/MarkWang90/mcd-memory-can',
+    lines: ['不知道从什么时候开始，', '在什么东西上面都有个日期。', '所以你把这些日期，装进了罐头。']
+  });
+  const tail = s[s.length-1];
+  tail.title = '不 会 过 期';
+  tail.sub = '用真实订单生成你自己的版本 →';
+
+  return s;
+}
+
+/* ---------- 幕内中央的自定义绘制（标题 / 双时间） ---------- */
+function drawCenter(ctx, y, sc){
+  const cx = W/2, cy = y + H*0.44;
+  ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle';
+
+  const maxW = W - PAD*2;
+
+  if (sc.title){
+    const tfs = fitFont(ctx, sc.title, 128, maxW);
+    ctx.fillStyle = 'rgba(196,44,58,.28)';
+    ctx.fillText(sc.title, cx+6, cy-60+5);
+    const g = ctx.createLinearGradient(0, cy-130, 0, cy-10);
+    g.addColorStop(0,'#F6D98A'); g.addColorStop(1,BRASS);
+    ctx.fillStyle = g; ctx.shadowColor='rgba(227,174,76,.35)'; ctx.shadowBlur=54;
+    ctx.font = tfs + 'px ' + SUB;
+    ctx.fillText(sc.title, cx, cy-60);
+    ctx.shadowBlur = 0;
+  }
+
+  if (sc.figureLines){
+    const [a,b] = sc.figureLines;
+    // 两个时间并排，先量一下能不能塞下，塞不下就缩
+    let nfs = 150;
+    ctx.font = nfs + 'px ' + NUM;
+    const need = ctx.measureText(a).width + ctx.measureText(b||'').width + 340;
+    if (need > maxW){ nfs = Math.floor(nfs * maxW / need); }
+    ctx.font = nfs + 'px ' + NUM;
+    ctx.fillStyle = 'rgba(227,174,76,.22)';
+    ctx.fillText(a, cx-170+4, cy+3); if(b) ctx.fillText(b, cx+170+4, cy+3);
+    const g = ctx.createLinearGradient(0,cy-80,0,cy+80);
+    g.addColorStop(0,'#F6D98A'); g.addColorStop(1,BRASS);
+    ctx.fillStyle = g; ctx.shadowColor='rgba(227,174,76,.32)'; ctx.shadowBlur=48;
+    ctx.fillText(a, cx-170, cy); if(b) ctx.fillText(b, cx+170, cy);
+    ctx.shadowBlur = 0;
+    if (sc.figureLabel){
+      ctx.font = '28px ' + SUB; ctx.fillStyle = BRASS;
+      ctx.fillText(sc.figureLabel[0], cx-170, cy-130);
+      ctx.fillText(sc.figureLabel[1], cx+170, cy-130);
+    }
+    if (a && b){ ctx.fillStyle = 'rgba(110,122,114,.8)'; ctx.font='64px '+SUB; ctx.fillText('·', cx, cy-14); }
+  }
+
+  if (sc.sub){
+    ctx.font = '34px ' + SUB;
+    ctx.fillStyle = CREAM; ctx.globalAlpha = .88;
+    ctx.fillText(sc.sub, cx, cy + (sc.title ? 90 : 210));
+  }
+  ctx.restore();
+}
+
+/* ---------- 主渲染：把所有幕拼成一张长卷 ---------- */
+let scenes = [], canvas = null, usingDemo = false;
+
+function render(){
+  const d = {
+    first: val('first'), last: val('last'), total: num('total'),
+    earliest: val('earliest'), latest: val('latest'),
+    fav: val('fav'), favCount: num('favCount'),
+    store: val('store'), storeCount: num('storeCount'),
+    gap: num('gap'), gapWhen: val('gapWhen'),
+    money: num('money')
+  };
+  if (!d.first && !d.last && !d.total && !d.fav && !d.store && !d.gap){
+    scenes = []; canvas = null;          // 别把上一卷留给下载按钮
+    $('empty').style.display='block'; $('preview').style.display='none';
+    $('meta').textContent='尚未生成';
+    $('dlAll').disabled = $('dlOne').disabled = true;
+    return;
+  }
+
+  scenes = buildScenes(d);
+  const n = scenes.length;
+  canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H*n;
+  const ctx = canvas.getContext('2d');
+
+  scenes.forEach((sc, i) => {
+    drawScene(ctx, i*H, sc, i, n);
+    if (sc.title || sc.figureLines) drawCenter(ctx, i*H, sc);
+  });
+
+  const pv = $('preview');
+  pv.width = W; pv.height = H*n;
+  pv.getContext('2d').drawImage(canvas, 0, 0);
+  pv.style.display='block';
+  $('empty').style.display='none';
+  $('meta').textContent = `${n} 幕 · ${W}×${H*n} · ${usingDemo ? '随机示例' : '我的数字'}`;
+  $('dlAll').disabled = $('dlOne').disabled = false;
+  $('scroll').scrollTop = 0;
+}
+
+function download(c, name){
+  c.toBlob(b => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }, 'image/png');
+}
+
+/* ---------- 工具：中文数字 / 月份差 ---------- */
+const DIGITS = '零一二三四五六七八九';
+function cn(n){
+  n = Math.round(Number(n) || 0);
+  if (n < 10) return DIGITS[n];
+  if (n < 20) return '十' + (n%10 ? DIGITS[n%10] : '');
+  if (n < 100) return DIGITS[Math.floor(n/10)] + '十' + (n%10 ? DIGITS[n%10] : '');
+  if (n < 1000){
+    const h = Math.floor(n/100), r = n%100;
+    return DIGITS[h]+'百' + (r<10 ? '零'+DIGITS[r] : cn(r));
+  }
+  if (n < 10000){
+    const t = Math.floor(n/1000), r = n%1000;
+    return DIGITS[t]+'千' + (r<100 ? (r? '零'+cn(r):'') : cn(r));
+  }
+  return String(n);
+}
+/* 字幕里念出来的数字：小数目用中文，大了就念回阿拉伯数字。
+   「二千七百七十一天」这种读法，王家卫也不会这么写。 */
+function cnShort(n){
+  n = Math.round(Number(n) || 0);
+  return n > 0 && n < 100 ? cn(n) : String(n);
+}
+/* 2019-03 → 2019 年 3 月：字幕里的日期要念出来，不是印出来 */
+function ym(v){
+  const p = String(v).split('-');
+  if (p.length < 2) return v;
+  return `${p[0]} 年 ${+p[1]} 月`;
+}
+function monthsBetween(a, b){
+  const pa = a.split('-'), pb = b.split('-');
+  if (pa.length<2 || pb.length<2) return null;
+  const da = new Date(+pa[0], +pa[1]-1, 1), db = new Date(+pb[0], +pb[1]-1, 1);
+  if (isNaN(da) || isNaN(db)) return null;
+  const days = Math.round((db - da) / 86400000);
+  return days > 0 ? days : null;
+}
+
+/* =====================================================================
+   摇一个罐头：随机生成一套自洽的数字
+   ---------------------------------------------------------------------
+   这些数字是编的，但彼此之间不矛盾：跨度、顿数、频次、客单价互相对得上。
+   画面是真的，数字是假的 —— 真订单版在仓库里，得用官方 MCP 跑。
+   ===================================================================== */
+const ITEMS = ['麦辣鸡腿堡','双层吉士汉堡','板烧鸡腿堡','巨无霸','麦香鱼','安格斯厚牛堡',
+  '麦麦脆汁鸡','吉士蛋麦满分','猪柳蛋麦满分','麦香鸡','1+1 随心配','中薯条','大薯条',
+  '麦乐鸡','玉米杯','麦旋风','无糖可口可乐','鲜萃冰咖','热香饼','菠萝派'];
+const STORES = ['大学城店','西二旗店','五道口店','陆家嘴店','天河城店','春熙路店','国贸店',
+  '中关村店','徐家汇店','珠江新城店','翠湖店','万象城店','虹桥火车站店','软件园店'];
+const WHEN = ['换工作那年','搬家的那阵子','毕业那个夏天','加班最狠的半年','换城市之后',
+  '开始健身以后','谈恋爱那会儿','项目上线的那三个月','有孩子的第一年','去年冬天'];
+
+function randomData(){
+  const rnd = (a,b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pad = n => String(n).padStart(2,'0');
+
+  const firstY = rnd(2013, 2025), firstM = rnd(1,12);
+  const lastY  = 2026,            lastM  = rnd(1,10);
+  let first = `${firstY}-${pad(firstM)}`, last = `${lastY}-${pad(lastM)}`;
+  if (firstY === lastY && firstM > lastM) first = `${firstY}-${pad(Math.max(1, lastM-1))}`;
+
+  const spanDays = Math.max(40, (lastY - firstY) * 365 + (lastM - firstM) * 30);
+  const total    = Math.max(3, Math.round(spanDays / rnd(4, 40)));
+  return {
+    first, last, total,
+    earliest: `${pad(rnd(6,9))}:${pad(rnd(0,59))}`,
+    latest:   `${pad(rnd(19,23))}:${pad(rnd(0,59))}`,
+    fav:   ITEMS[rnd(0, ITEMS.length-1)],
+    favCount:   Math.max(2, Math.round(total * (0.15 + Math.random()*0.25))),
+    store: STORES[rnd(0, STORES.length-1)],
+    storeCount: Math.max(2, Math.round(total * (0.20 + Math.random()*0.30))),
+    gap:     rnd(7, 210),
+    gapWhen: WHEN[rnd(0, WHEN.length-1)],
+    money:   Math.round(total * (18 + Math.random()*22))
+  };
+}
+function fillForm(d){
+  Object.entries(d).forEach(([k,v]) => { const el = $(k); if (el) el.value = v; });
+}
+
+/* ---------- 事件 ---------- */
+$('roll').addEventListener('click', () => {
+  usingDemo = true;
+  fillForm(randomData());
+  render();
+});
+$('toggleForm').addEventListener('click', () => {
+  const p = $('formPanel'), open = p.style.display !== 'none';
+  p.style.display = open ? 'none' : 'block';
+  $('toggleForm').textContent = open ? '用我的真实数字 ▾' : '收起 ▲';
+});
+$('go').addEventListener('click', () => { usingDemo = false; render(); });
+$('clear').addEventListener('click', () => {
+  ['first','last','total','earliest','latest','fav','favCount','store','storeCount','gap','gapWhen','money']
+    .forEach(id => $(id).value = '');
+  usingDemo = false;
+  $('empty').style.display='block'; $('preview').style.display='none';
+  $('meta').textContent='尚未生成'; $('dlAll').disabled=$('dlOne').disabled=true;
+});
+$('dlAll').addEventListener('click', () => {
+  if (canvas) download(canvas, '麦麦记忆罐头-长卷.png');
+});
+$('dlOne').addEventListener('click', () => {
+  if (!canvas) return;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  c.getContext('2d').drawImage(canvas, 0, 0, W, H, 0, 0, W, H);
+  download(c, '麦麦记忆罐头-封面.png');
+});
+// 回车即生成
+document.querySelectorAll('input').forEach(i => {
+  i.addEventListener('keydown', e => { if (e.key === 'Enter') render(); });
+});
+</script>
+</body>
+</html>
