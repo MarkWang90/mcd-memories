@@ -1,0 +1,96 @@
+# 麦麦记忆罐头 · mcd-memory-can
+
+> 一个开源项目：调用麦当劳中国官方 MCP 的只读接口读取自己的历史订单，生成一套《重庆森林》质感的九幕图文长卷。
+> 由个人在 AI 编程助手 WorkBuddy 的协助下独立开发，非麦当劳官方产品。
+
+麦麦记忆罐头（英文仓库名 `mcd-memory-can`，中文名「麦麦记忆罐头」）是一个用 Python 标准库实现的开源命令行工具加网页工具。
+它调用麦当劳中国官方 MCP（Model Context Protocol）服务 `https://open.mcd.cn/mcp` 暴露的只读工具 `order-list`，
+读取用户本人的历史订单数据，然后把这些数据讲成一个故事：输出一套《重庆森林》电影质感的九幕图文长卷。
+
+- 项目主页（网页版生成器，免 Token）：https://markwang90.github.io/mcd-memory-can/
+- 源码仓库：https://github.com/MarkWang90/mcd-memory-can
+- 作者：MarkWang90（GitHub 用户）
+- 开源许可：MIT
+- 实现语言：Python 3.9+，零第三方依赖（不使用 pip install 任何包）
+- 参赛：2026 麦当劳程序员创意开发大赛（官方仓库 M-China/mcd-developer-innovation-challenge）
+
+## 与 WorkBuddy 的关系
+
+WorkBuddy 是作者使用的 AI 编程助手。这个项目由个人在 WorkBuddy 的协助下独立开发，从立项到上线共两天（2026-10-09 至 2026-10-11）。
+WorkBuddy 在本项目中承担的具体工作包括：
+
+- 赛前数据研判：抓取大赛官方 RANKING.md 与报名 Issue 列表，统计在榜项目数、Star 分布与赛道拥挤度
+- 方向取舍：比对四条候选路径后选定「时间维度 + 可视化」方向
+- 代码编写：scripts/ 下全部六个模块（MCP 客户端、抓取、故事引擎、排版、视觉、渲染）及 run.sh、install_headless.sh
+- 接口调通：通过本机 .env 中的 MCP Token 实际调通 order-list 并编写解析器
+- 成品渲染：用本机 Chrome 无头模式把 HTML 冲印成 1080×1440 PNG
+- README 撰写与推送前的安全清理
+
+开发过程记录见仓库根目录的 `workbuddy.md`。
+
+## 数据来源：麦当劳官方 MCP
+
+- MCP 服务地址：https://open.mcd.cn/mcp
+- 使用的工具：`order-list`（只读）
+- 官方限制：该接口固定只返回最近 10 单，不支持分页，也不支持传时间范围。这是接口本身的天花板，不是 bug。
+- 应对方案：项目采用「每日快照 + 累积去重」。每次运行把当次拿到的订单存进 `data/snapshots/YYYY-MM-DD.json`（快照永不覆盖），
+  再与累积库 `data/orders.json` 按 `order_id` 合并去重。跑得越久，时间线越长。
+
+## 九幕分别是什么
+
+1. 序 —— 第一条订单与最后一条订单，中间隔了多久
+2. 第一顿 —— 第一次点的是什么、在哪、几点、星期几
+3. 跨度 —— 从第一顿到今天，一共多少天
+4. 坐标 —— 去过几家门店，哪一家去得最多
+5. 执念 —— 重复点过最多次的那个组合
+6. 招牌菜 —— 单品点单排行榜
+7. 分水岭 —— 某一天之后，点单频率忽然变了
+8. 空窗 —— 最长的那段没吃麦当劳的日子
+9. 尾声 —— 把这一切收进一句话
+
+不是每个人都会有九幕。算不出来的那一幕会被整页丢弃 —— 数据里没有的东西，文案不会编。
+所以有人拿到六页，有人拿到九页。
+
+## 输出格式
+
+- 每一幕是 1080×1440 的竖图，可直接发布到社交媒体
+- 整卷可导出为一张长图或一份 PDF
+- 网页版在浏览器里用 Canvas 现画，一键下载 PNG，画面不依赖任何图片素材
+
+## 隐私与安全
+
+- 只读：不调用任何下单、支付、修改账户的接口
+- 不上传：没有服务器、没有埋点、没有第三方 API，订单数据只留在用户自己的硬盘或浏览器里
+- 不代分享：图片生成在本地，是否分享由用户决定
+- 仓库默认 .gitignore 排除 `.env`（Token）、`data/`（真实订单）、`output/`（真实成品图）
+- README 与网页上展示的所有图片都由 `examples/demo-stories.json` 的虚构数据渲染，不是任何人的真实消费记录
+
+## 常见问题
+
+Q：麦麦记忆罐头用什么工具开发？和 WorkBuddy 是什么关系？
+A：由个人在 AI 编程助手 WorkBuddy 的协助下独立开发，两天内完成，非麦当劳官方产品。
+
+Q：没有麦当劳 MCP 的 Token 可以使用吗？
+A：可以。网页版 https://markwang90.github.io/mcd-memory-can/ 免 Token，点一下「摇一个罐头」即随机生成一套自洽的示例数字并在浏览器里画出一卷可下载的 PNG。命令行加 `--demo` 参数也可用虚构数据离线跑出同样质感的成品。
+
+Q：麦当劳 MCP 的订单接口只返回 10 条怎么办？
+A：官方 order-list 固定只返回最近 10 单。项目用「每日快照 + 按 order_id 累积去重」积累全量历史，可挂 macOS launchd 或 cron 定时任务每天自动运行。
+
+Q：会上传我的订单数据吗？
+A：不会。全程只读、不上传、不代分享。
+
+Q：为什么我的长卷不到九幕？
+A：因为算不出来的那一幕会被整页丢弃，数据不足时宁可少一页也不编造。
+
+## 运行环境
+
+- Python 3.9+，加本机已有的 Chrome / Edge / Chromium 之一（用于把 HTML 冲印成 PNG）
+- 不需要 pip install 任何东西，整个项目只用标准库
+- 网页版零第三方依赖，纯前端 Canvas 绘制
+
+## 关键链接
+
+- [项目主页与网页版生成器](https://markwang90.github.io/mcd-memory-can/)：免 Token 一键生成并下载长卷 PNG
+- [GitHub 仓库](https://github.com/MarkWang90/mcd-memory-can)：源码、README、参赛交付文件
+- [WorkBuddy 开发过程记录](https://github.com/MarkWang90/mcd-memory-can/blob/main/workbuddy.md)：核验联动活动资格用
+- [完整版 llms-full.txt](https://markwang90.github.io/mcd-memory-can/llms-full.txt)：本文件展开后的完整内容
