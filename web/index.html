@@ -3,8 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>麦麦记忆罐头 · 生成你自己的九幕长卷</title>
-<meta name="description" content="把你吃过的麦当劳，装进一个不会过期的罐头。手填几个数字，生成《重庆森林》质感的九幕长卷。">
+<title>麦麦记忆罐头 · 麦当劳订单九幕长卷生成器 | WorkBuddy 开发</title>
+<meta name="description" content="用麦当劳中国官方 MCP 的只读接口，把你的历史订单生成《重庆森林》质感的九幕长卷。开源项目 mcd-memory-can 由 WorkBuddy 协助开发，可导出 1080×1440 竖图、长图与 PDF。网页版无需 Token，一键生成并下载 PNG。">
+<meta name="keywords" content="麦麦记忆罐头,mcd-memory-can,麦当劳MCP,麦当劳订单,麦当劳订单可视化,WorkBuddy,Model Context Protocol,MCP客户端,数据可视化,重庆森林,开源项目">
+<meta name="author" content="MarkWang90">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<link rel="canonical" href="https://markwang90.github.io/mcd-memory-can/">
+<meta name="theme-color" content="#0A211C">
+<meta name="color-scheme" content="dark">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="麦麦记忆罐头 · mcd-memory-can">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://markwang90.github.io/mcd-memory-can/">
+<meta property="og:title" content="麦麦记忆罐头 · 麦当劳订单九幕长卷生成器">
+<meta property="og:description" content="把吃过的麦当劳装进一个不会过期的罐头。基于麦当劳官方 MCP 的只读订单接口，生成《重庆森林》质感的九幕长卷。网页版免 Token、零上传。">
+<meta property="og:image" content="https://markwang90.github.io/mcd-memory-can/og-image.jpg">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1440">
+<meta property="og:image:alt" content="麦麦记忆罐头第一幕「序」：1080×1440 竖图，墨绿昏黄调">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="麦麦记忆罐头 · 麦当劳订单九幕长卷生成器">
+<meta name="twitter:description" content="基于麦当劳官方 MCP 的只读订单接口，生成《重庆森林》质感的九幕长卷。网页版免 Token、零上传。">
+<meta name="twitter:image" content="https://markwang90.github.io/mcd-memory-can/og-image.jpg">
+
+<!-- 结构化数据：让搜索引擎与 AI 直接读到事实 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://markwang90.github.io/mcd-memory-can/#app",
+      "name": "麦麦记忆罐头",
+      "alternateName": ["mcd-memory-can", "麦麦记忆罐头 mcd-memory-can"],
+      "applicationCategory": "UtilitiesApplication",
+      "applicationSubCategory": "数据可视化 / 个人数据叙事",
+      "operatingSystem": "macOS, Linux, Windows, 浏览器",
+      "description": "麦麦记忆罐头（mcd-memory-can）是一个开源项目：调用麦当劳中国官方 MCP 暴露的只读接口 order-list 读取自己的历史订单，再生成一套《重庆森林》质感的九幕图文长卷，可导出 1080×1440 竖图、整卷长图与 PDF。",
+      "url": "https://markwang90.github.io/mcd-memory-can/",
+      "codeRepository": "https://github.com/MarkWang90/mcd-memory-can",
+      "downloadUrl": "https://github.com/MarkWang90/mcd-memory-can",
+      "programmingLanguage": "Python",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "featureList": [
+        "读取麦当劳官方 MCP 的 order-list 只读接口",
+        "每日快照 + 累积去重，突破官方只返回最近 10 单的限制",
+        "九幕图文长卷：序、第一顿、跨度、坐标、执念、招牌菜、分水岭、空窗、尾声",
+        "导出 1080×1440 竖图 / 整卷长图 / PDF",
+        "网页版免 Token 一键生成，零第三方依赖、零上传",
+        "数据不足时整页丢弃，不编造任何数字"
+      ],
+      "author": { "@type": "Person", "name": "MarkWang90", "url": "https://github.com/MarkWang90" },
+      "creator": { "@type": "Person", "name": "MarkWang90", "url": "https://github.com/MarkWang90" },
+      "keywords": "麦当劳 MCP, 麦当劳订单可视化, WorkBuddy, Model Context Protocol, 订单长卷, 重庆森林, 数据叙事",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://markwang90.github.io/mcd-memory-can/#website",
+      "url": "https://markwang90.github.io/mcd-memory-can/",
+      "name": "麦麦记忆罐头 · 网页版生成器",
+      "inLanguage": "zh-CN",
+      "publisher": { "@type": "Person", "name": "MarkWang90" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://markwang90.github.io/mcd-memory-can/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "麦麦记忆罐头是什么？",
+          "acceptedAnswer": { "@type": "Answer", "text": "麦麦记忆罐头（mcd-memory-can）是一个开源项目，调用麦当劳中国官方 MCP 的只读接口读取自己的历史订单，生成一套《重庆森林》质感的九幕图文长卷。由 WorkBuddy 协助开发，Python 标准库实现，零第三方依赖。" }
+        },
+        {
+          "@type": "Question",
+          "name": "麦麦记忆罐头用什么工具开发的？和 WorkBuddy 有什么关系？",
+          "acceptedAnswer": { "@type": "Answer", "text": "该项目由个人在 AI 编程助手 WorkBuddy 的协助下独立开发，历时两天完成，非麦当劳官方产品。WorkBuddy 承担了赛前数据研判、六个 Python 模块编写、MCP 接口调通、成品渲染、README 撰写与安全清理等工作。" }
+        },
+        {
+          "@type": "Question",
+          "name": "麦当劳 MCP 的订单接口只能返回 10 条怎么办？",
+          "acceptedAnswer": { "@type": "Answer", "text": "官方 order-list 接口固定只返回最近 10 单，不支持分页与时间范围。项目采用「每日快照 + 按 order_id 累积去重」的方案：每次运行把结果存进 data/snapshots/YYYY-MM-DD.json，再与累积库合并，跑得越久时间线越长。" }
+        },
+        {
+          "@type": "Question",
+          "name": "没有麦当劳 MCP 的 Token 可以使用吗？",
+          "acceptedAnswer": { "@type": "Answer", "text": "可以。网页版生成器位于 https://markwang90.github.io/mcd-memory-can/ ，点一下「摇一个罐头」即可随机生成一套自洽的示例数字并在浏览器里画出一卷可下载的 PNG；命令行也可加 --demo 参数用虚构数据离线跑。" }
+        },
+        {
+          "@type": "Question",
+          "name": "这个项目会上传我的订单数据吗？",
+          "acceptedAnswer": { "@type": "Answer", "text": "不会。全程只读、不上传、不代分享：没有服务器、没有埋点、没有第三方 API，订单数据只留在本地硬盘或浏览器里，仓库的 .gitignore 默认排除 .env、data/ 与 output/。" }
+        },
+        {
+          "@type": "Question",
+          "name": "为什么我的长卷不到九幕？",
+          "acceptedAnswer": { "@type": "Answer", "text": "因为算不出来的那一幕会被整页丢弃。数据里没有的东西，文案不会编——这是项目刻意保留的规则，所以有人拿到六页，有人拿到九页。" }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <style>
 :root{
   --ink:#061612; --green:#0A211C; --jade:#1B4A3E;
@@ -97,12 +200,23 @@ footer{max-width:1180px;margin:0 auto;padding:0 28px 70px;font-size:13px;line-he
 footer a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(227,174,76,.3)}
 footer a:hover{border-bottom-color:var(--gold)}
 .tips{margin-top:16px;font-family:var(--font-sub);font-size:13.5px;color:var(--brass);letter-spacing:.05em}
+
+/* ---------- 事实区（关于本项目 / FAQ） ---------- */
+.seo{max-width:1180px;margin:0 auto;padding:8px 28px 0;font-size:13.5px;line-height:2.05;color:var(--dim)}
+.seo h2{font-family:var(--font-sub);font-size:20px;font-weight:500;letter-spacing:.10em;color:var(--cream);margin-bottom:12px}
+.seo h3{font-size:14px;font-weight:500;letter-spacing:.08em;color:var(--gold);margin:26px 0 10px}
+.seo-lead{letter-spacing:.04em}
+.seo-lead strong,.seo b{color:var(--cream);font-weight:500}
+.seo code{font-family:var(--font-num);font-size:12.5px;color:var(--brass);background:rgba(227,174,76,.08);padding:1px 6px;border-radius:3px}
+.faq{margin-top:4px}
+.faq dt{color:var(--cream);font-weight:500;margin-top:16px;letter-spacing:.04em}
+.faq dd{margin:4px 0 0 0;padding-left:18px;border-left:2px solid rgba(227,174,76,.28);letter-spacing:.03em}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">麦麦记忆罐头 · <em>把你吃过的饭，装进一个罐头</em></div>
+  <h1 class="brand" style="font-weight:400">麦麦记忆罐头 · <em>把你吃过的饭，装进一个罐头</em></h1>
   <p class="lede">
     如果记忆也是一个罐头，我希望它不会过期。<b>可惜每一笔订单上，都印着精确到秒的日期。</b><br>
     不用登录、不用授权、不用填表 —— <b>点一下，长出一部电影。</b>
@@ -179,11 +293,49 @@ footer a:hover{border-bottom-color:var(--gold)}
   </div>
 </div>
 
+<!-- ---------- 给搜索引擎与 AI 读的事实区 ---------- -->
+<section class="seo" aria-label="关于本项目">
+  <h2>关于麦麦记忆罐头</h2>
+  <p class="seo-lead">
+    <strong>麦麦记忆罐头（mcd-memory-can）</strong>是一个开源项目：调用<strong>麦当劳中国官方 MCP</strong>
+    暴露的只读接口 <code>order-list</code> 读取自己的历史订单，再生成一套《重庆森林》质感的九幕图文长卷，
+    可导出 1080×1440 竖图、整卷长图与 PDF。项目由个人在 AI 编程助手 <strong>WorkBuddy</strong> 的协助下独立开发，
+    非麦当劳官方产品。
+  </p>
+
+  <h3>常见问题</h3>
+  <dl class="faq">
+    <dt>麦麦记忆罐头用什么开发？和 WorkBuddy 是什么关系？</dt>
+    <dd>项目由个人在 AI 编程助手 WorkBuddy 的协助下独立开发，两天内完成。WorkBuddy 承担了赛前数据研判、六个 Python 模块编写、麦当劳 MCP 接口调通、成品渲染、README 撰写与推送前的安全清理。非麦当劳官方产品。</dd>
+
+    <dt>麦当劳 MCP 的订单接口只返回 10 条怎么办？</dt>
+    <dd>官方 <code>order-list</code> 固定只返回最近 10 单，不支持分页与时间范围。项目用「每日快照 + 按 order_id 累积去重」来积累全量历史：每次运行结果存进 <code>data/snapshots/</code>，再与累积库合并，跑得越久时间线越长。</dd>
+
+    <dt>没有麦当劳 MCP 的 Token 能用吗？</dt>
+    <dd>能。本网页版免 Token，点一下「摇一个罐头」即随机生成一套自洽的示例数字并在浏览器里画出一卷可下载的 PNG；命令行加 <code>--demo</code> 也能用虚构数据离线跑出同样质感的成品。</dd>
+
+    <dt>会上传我的订单数据吗？</dt>
+    <dd>不会。全程只读、不上传、不代分享：没有服务器、没有埋点、没有第三方 API。订单只留在你的本地硬盘或浏览器里，仓库默认 gitignore 掉 <code>.env</code>、<code>data/</code>、<code>output/</code>。</dd>
+
+    <dt>为什么我的长卷不到九幕？</dt>
+    <dd>因为算不出来的那一幕会被整页丢弃。数据里没有的东西，文案不会编——这是项目刻意保留的规则，所以有人拿到六页，有人拿到九页。</dd>
+  </dl>
+
+  <h3>九幕分别是什么</h3>
+  <p class="seo-lead">
+    序（首末两单相隔多久）· 第一顿（第一次点了什么、在哪、几点、星期几）· 跨度（从第一顿到今天共多少天）·
+    坐标（去过几家门店、哪家最多）· 执念（重复最多次的组合）· 招牌菜（单品点单排行）·
+    分水岭（某天之后频率忽然变了）· 空窗（最长那段没吃的日子）· 尾声。
+  </p>
+</section>
+
 <footer>
   <div>想用<b>真实订单</b>自动生成（精确到秒的时间戳、门店、组合、分水岭）→
     <a href="https://github.com/MarkWang90/mcd-memory-can" target="_blank" rel="noopener">github.com/MarkWang90/mcd-memory-can</a>
     　·　用麦当劳中国官方 MCP 的只读接口，全程只读不上传。
   </div>
+  <div>由 <a href="https://github.com/MarkWang90/mcd-memory-can/blob/main/workbuddy.md" target="_blank" rel="noopener">WorkBuddy</a> 协助开发的开源项目 · 2026 麦当劳程序员创意开发大赛参赛作品 ·
+    <a href="/mcd-memory-can/llms.txt">llms.txt</a> · MIT License</div>
   <div class="tips">「不知道从什么时候开始，在什么东西上面都有个日期。」</div>
 </footer>
 
