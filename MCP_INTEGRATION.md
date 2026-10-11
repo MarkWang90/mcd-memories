@@ -1,6 +1,6 @@
 # MCP 集成说明
 
-本项目「麦麦记忆 · mcd-memories」基于**麦当劳中国官方 MCP** 开发，全程只调用一个只读接口：`order-list`。
+本项目「麦麦记忆罐头 · mcd-memory-can」基于**麦当劳中国官方 MCP** 开发，全程只调用一个只读接口：`order-list`。
 
 ---
 
@@ -25,10 +25,10 @@
 
 **明确未调用的能力**：项目不调用 `create-order`、`cancel-order`、`mall-create-order`、`auto-bind-coupons`、`draw-lottery`、`party-order-create` 等任何下单、支付、改单、领券、抽奖类接口。
 
-`mcd-memories` 的客户端（`scripts/mcd_client.py`）在初始化时向 MCP Server 声明的身份为：
+`mcd-memory-can` 的客户端（`scripts/mcd_client.py`）在初始化时向 MCP Server 声明的身份为：
 
 ```json
-{"clientInfo": {"name": "mcd-memories", "version": "1.0.0"}}
+{"clientInfo": {"name": "mcd-memory-can", "version": "1.0.0"}}
 ```
 
 客户端模块只暴露 `raw_call()` / `json_call()` 两个读方法，**没有提供任何写操作入口**。

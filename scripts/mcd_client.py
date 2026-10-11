@@ -109,7 +109,7 @@ class MCDClient:
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {},
-                "clientInfo": {"name": "mcd-memories", "version": "1.0.0"},
+                "clientInfo": {"name": "mcd-memory-can", "version": "1.0.0"},
             },
         )
         try:

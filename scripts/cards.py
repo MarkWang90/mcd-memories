@@ -510,7 +510,7 @@ def github_cover(st: dict, mode: str) -> str:
         把你麦当劳账户里的订单，<br>拍成一部电影。
       </div>
       <div style="margin-top:26px;font-family:var(--font-num);font-size:22px;
-                  letter-spacing:.08em;color:#B8873A">github.com/MarkWang90/mcd-memories</div>
+                  letter-spacing:.08em;color:#B8873A">github.com/MarkWang90/mcd-memory-can</div>
     </div>
   </div>
 </div>

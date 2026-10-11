@@ -1,7 +1,7 @@
-# WorkBuddy 开发上下文 · 麦麦记忆 mcd-memories
+# WorkBuddy 开发上下文 · 麦麦记忆罐头 mcd-memory-can
 
 > 本文件用于核验「WorkBuddy 联动活动奖励」资格，记录本项目使用 WorkBuddy 开发的过程。
-> 项目仓库：https://github.com/MarkWang90/mcd-memories（Public，创建于 2026-10-10 16:28:57 UTC）
+> 项目仓库：https://github.com/MarkWang90/mcd-memory-can（Public，创建于 2026-10-10 16:28:57 UTC，原名 mcd-memories）
 > 参赛：2026 麦当劳程序员创意开发大赛（官方仓库 M-China/mcd-developer-innovation-challenge）
 > 记录时间：2026-10-11
 
@@ -32,7 +32,7 @@
 - 拍板：参赛、走时间维度方向、账号 MarkWang90、须新建仓库
 
 **2026-10-10 · 立项与首跑**
-- 22:28 新建仓库 `MarkWang90/mcd-memories`
+- 22:28 新建仓库 `MarkWang90/mcd-memories`（后于 10-11 更名为 `mcd-memory-can`）
 - 22:32 配置 `.env`（MCP Token，权限 600，已 gitignore）
 - 22:38 首版 `install_headless.sh`；随后完成 `mcd_client.py` / `fetch_orders.py` 并首次真实调通 `order-list`
 - 发现接口天花板：`order-list` 只返回最近 10 单，不支持分页与时间范围 → 设计「每日快照 + 累积去重」方案
@@ -44,7 +44,8 @@
 - 17:36 保留仓库自带 MIT LICENSE
 - 18:00–18:20 背景图 PNG→JPG（15MB→3.1MB）；用 `--demo` 虚构数据渲染 README 展示图（6MB→991KB）；剔除 `.dup*` 副本与 `output/.chrome`
 - 18:20 重写 README 并推送 GitHub，远端核实 26 个文件、敏感目录确认未上传
-- 18:25 补齐参赛交付文件（参赛声明 / MCP 集成说明 / 脱敏配置示例）
+- 18:25 补齐参赛交付文件（参赛声明 / MCP 集成说明 / 脱敏配置示例）并推送 GitHub
+- 18:46 定名：中文名「麦麦记忆罐头」，仓库更名 `mcd-memory-can`；README 引语加入台词反转「可惜你每一顿麦当劳的订单上，都印着精确到秒的日期」
 
 ---
 
