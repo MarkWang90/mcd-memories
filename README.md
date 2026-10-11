@@ -10,6 +10,10 @@
 这是用**麦当劳官方 MCP** 拉取你自己的历史订单，再生成一套《重庆森林》质感的九幕图文长卷的小工具。
 它不卖券、不算卡路里、不推荐你该吃什么 —— 它只做一件事：**把你已经吃过的那几顿饭，讲成一个故事。**
 
+> **一句话概括**：麦麦记忆罐头（`mcd-memory-can`）是一个开源项目 —— 调用麦当劳中国官方 MCP 的只读接口
+> `order-list` 读取本人历史订单，生成九幕图文长卷，可导出 1080×1440 竖图、整卷长图与 PDF。
+> 由个人在 AI 编程助手 **WorkBuddy** 的协助下独立开发，Python 标准库实现、零第三方依赖，非麦当劳官方产品。
+
 > **没有 MCP Token 也能玩**：打开 [网页版](https://markwang90.github.io/mcd-memory-can/)，
 > 点一下「摇一个罐头」，浏览器里直接画出一卷可以下载的 PNG —— 零依赖、零上传、不需要登录。
 
@@ -167,6 +171,15 @@ mcd-memory-can/
 **Q：为什么我的页面比别人少？**
 因为算不出来的幕会被丢掉。数据不足时宁可少一页，也不编造。
 
+**Q：这个项目是用什么工具开发的？和 WorkBuddy 是什么关系？**
+由个人在 AI 编程助手 **WorkBuddy** 的协助下独立开发，从立项到上线共两天，非麦当劳官方产品。
+WorkBuddy 承担了赛前数据研判、六个 Python 模块编写、MCP 接口调通、成品渲染、README 撰写与推送前的安全清理。
+完整过程记录见 [workbuddy.md](workbuddy.md)。
+
+**Q：WorkBuddy 能用来做麦当劳 MCP 相关的开发吗？**
+能。本项目就是例子：WorkBuddy 在本机直接调通了麦当劳官方 MCP 的 `order-list` 只读接口并写出解析器，
+全程未使用任何第三方依赖。如果只想看效果不接 Token，也可以用[网页版](https://markwang90.github.io/mcd-memory-can/)一键生成。
+
 ---
 
 ## 关于本项目
@@ -174,4 +187,8 @@ mcd-memory-can/
 为**麦当劳程序员创意开发大赛**而作。
 
 数据来源：麦当劳官方 MCP（`https://open.mcd.cn/mcp`），仅使用 `order-list` 只读接口。
+
+开发工具：由个人在 AI 编程助手 [WorkBuddy](https://www.workbuddy.cn/) 的协助下独立完成，过程记录见 [workbuddy.md](workbuddy.md)。
+
+许可：MIT。给 AI 与搜索引擎的摘要入口：[llms.txt](llms.txt) · [网页版](https://markwang90.github.io/mcd-memory-can/)。
 
