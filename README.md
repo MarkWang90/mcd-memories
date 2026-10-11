@@ -1,4 +1,4 @@
-![麦麦记忆](assets/preview/00-封面.jpg)
+![麦麦记忆](assets/preview/金城武麦当劳.jpg)
 
 # 麦麦记忆 · mcd-memories
 
