@@ -1,0 +1,44 @@
+# 麦麦记忆罐头 · mcd-memory-can
+# 允许所有搜索引擎与 AI 爬虫抓取，以便检索「麦当劳 MCP / WorkBuddy」时能找到本项目。
+
+User-agent: *
+Allow: /
+
+# —— AI 检索与训练爬虫：显式放行 ——
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+Sitemap: https://markwang90.github.io/mcd-memory-can/sitemap.xml
